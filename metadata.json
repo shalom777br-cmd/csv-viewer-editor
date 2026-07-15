@@ -1,0 +1,6 @@
+{
+  "name": "CSV Viewer & Editor",
+  "description": "極シンプルで文字が見やすく、カラムを自由自在に移動・編集・保存できるCSVファイルヴューワー＆エディター",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
