@@ -6,7 +6,6 @@ import {
   getSampleCSVText 
 } from './utils/csvHelper';
 import CSVTable from './components/CSVTable';
-import CSVStats from './components/CSVStats';
 import { 
   FileSpreadsheet, 
   Upload, 
@@ -428,141 +427,6 @@ E106,伊藤 さくら,カスタマーサポート,リーダー,2022,休職中`;
       {/* Application Container */}
       <main className="max-w-7xl mx-auto px-6 mt-8 space-y-6">
         
-        {/* Help banner / Quick Guide */}
-        <div className="bg-slate-100 border border-slate-200 rounded-xl p-4 flex items-start gap-3">
-          <Info className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-          <div className="text-xs text-slate-600 space-y-1 font-sans">
-            <p className="font-semibold text-slate-800">💡 便利な操作ガイド</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-1">
-              <p>・<strong>カラム移動:</strong> 上部のハンドル <span className="inline-flex bg-white px-1 border rounded">☰</span> をドラッグ、または矢印で左右に並び替え可能！</p>
-              <p>・<strong>セルの編集:</strong> セルまたはカラム名を<strong>ダブルクリック</strong>して、値を直接編集可能！</p>
-              <p>・<strong>ファイル読込:</strong> パソコンからこの画面にファイルを直接<strong>ドラッグ＆ドロップ</strong>で読み込めます！</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Global Action Tools Panel */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
-            {/* 1. File Upload Selector */}
-            <div className="lg:col-span-4 space-y-2">
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider font-sans">
-                ファイルの読み込み
-              </label>
-              <div className="relative group">
-                <input
-                  type="file"
-                  accept=".csv,.tsv,.txt"
-                  onChange={handleFileChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                />
-                <div className="flex items-center justify-center gap-2 px-4 py-3 bg-indigo-50 hover:bg-indigo-100/80 text-indigo-700 rounded-xl transition-all border border-indigo-200 border-dashed text-sm font-semibold text-center select-none">
-                  <Upload className="w-4 h-4 shrink-0" />
-                  <span>PCからファイルを選択</span>
-                </div>
-              </div>
-            </div>
-
-            {/* 2. Text Search Filter */}
-            <div className="lg:col-span-4 space-y-2">
-              <label htmlFor="search-input" className="block text-xs font-bold text-slate-500 uppercase tracking-wider font-sans">
-                表内リアルタイム検索
-              </label>
-              <div className="relative">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
-                <input
-                  id="search-input"
-                  type="text"
-                  placeholder="任意の文字・数字で検索フィルタリング..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-sans"
-                />
-              </div>
-            </div>
-
-            {/* 3. Undo/Redo Engine */}
-            <div className="lg:col-span-4 flex flex-col justify-end space-y-2">
-              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-sans">
-                履歴・変更の取り消し
-              </span>
-              <div className="flex gap-2">
-                <button
-                  onClick={handleUndo}
-                  disabled={historyIndex <= 0}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:hover:bg-transparent rounded-xl transition-all font-sans text-sm font-semibold cursor-pointer"
-                  title="元に戻す (Undo)"
-                >
-                  <Undo2 className="w-4.5 h-4.5" />
-                  <span>元に戻す</span>
-                </button>
-                <button
-                  onClick={handleRedo}
-                  disabled={historyIndex >= history.length - 1}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:hover:bg-transparent rounded-xl transition-all font-sans text-sm font-semibold cursor-pointer"
-                  title="やり直す (Redo)"
-                >
-                  <Redo2 className="w-4.5 h-4.5" />
-                  <span>やり直す</span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Export Settings Row */}
-          <div className="border-t border-slate-100 pt-5 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-slate-400" />
-                <span className="text-xs font-bold text-slate-500 font-sans">
-                  エクスポート設定:
-                </span>
-              </div>
-              
-              {/* Filename Input */}
-              <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
-                <span className="px-2 py-1 text-xs text-slate-400 font-mono bg-slate-100 border-r border-slate-200">
-                  ファイル名
-                </span>
-                <input
-                  type="text"
-                  value={exportFileName}
-                  onChange={(e) => setExportFileName(e.target.value)}
-                  className="px-2.5 py-1 text-xs text-slate-700 bg-transparent focus:outline-none w-36 font-sans font-medium"
-                />
-              </div>
-
-              {/* Delimiter Selector */}
-              <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
-                <span className="px-2 py-1 text-xs text-slate-400 font-mono bg-slate-100 border-r border-slate-200">
-                  区切り文字
-                </span>
-                <select
-                  value={exportDelimiter}
-                  onChange={(e) => setExportDelimiter(e.target.value)}
-                  className="px-2.5 py-1 text-xs text-slate-700 bg-transparent focus:outline-none cursor-pointer font-sans font-medium"
-                >
-                  <option value=",">カンマ ( , ) - 標準CSV</option>
-                  <option value=";">セミコロン ( ; ) - 欧州</option>
-                  <option value="&#9;">タブ ( \\t ) - TSV形式</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Export Download Button */}
-            <button
-              onClick={handleExportCSV}
-              id="btn-export-csv"
-              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl shadow-md shadow-indigo-100 transition-all font-sans text-sm font-bold cursor-pointer"
-            >
-              <Download className="w-4 h-4" />
-              <span>編集したCSVを保存</span>
-            </button>
-          </div>
-        </div>
-
         {/* Dynamic Interactive Feedback Toast Notification */}
         <AnimatePresence>
           {feedbackMsg && (
@@ -597,8 +461,145 @@ E106,伊藤 さくら,カスタマーサポート,リーダー,2022,休職中`;
           onAddRow={handleAddRow}
         />
 
-        {/* Dynamic Analytics & Statistics Analysis Box */}
-        <CSVStats headers={data.headers} rows={data.rows} />
+        {/* Footer section replacing top tools panel and containing everything else requested */}
+        <footer className="space-y-6 pt-6 border-t border-slate-200">
+          
+          {/* Global Action Tools Panel in Footer */}
+          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+              
+              {/* 1. File Upload Selector */}
+              <div className="lg:col-span-4 space-y-2">
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider font-sans">
+                  ファイルの読み込み
+                </label>
+                <div className="relative group">
+                  <input
+                    type="file"
+                    accept=".csv,.tsv,.txt"
+                    onChange={handleFileChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  />
+                  <div className="flex items-center justify-center gap-2 px-4 py-3 bg-indigo-50 hover:bg-indigo-100/80 text-indigo-700 rounded-xl transition-all border border-indigo-200 border-dashed text-sm font-semibold text-center select-none">
+                    <Upload className="w-4 h-4 shrink-0" />
+                    <span>PCからファイルを選択</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Text Search Filter */}
+              <div className="lg:col-span-4 space-y-2">
+                <label htmlFor="search-input" className="block text-xs font-bold text-slate-500 uppercase tracking-wider font-sans">
+                  表内リアルタイム検索
+                </label>
+                <div className="relative">
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+                  <input
+                    id="search-input"
+                    type="text"
+                    placeholder="任意の文字・数字で検索フィルタリング..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl bg-slate-50 focus:bg-white text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-sans"
+                  />
+                </div>
+              </div>
+
+              {/* 3. Undo/Redo Engine */}
+              <div className="lg:col-span-4 flex flex-col justify-end space-y-2">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-sans">
+                  履歴・変更の取り消し
+                </span>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleUndo}
+                    disabled={historyIndex <= 0}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:hover:bg-transparent rounded-xl transition-all font-sans text-sm font-semibold cursor-pointer"
+                    title="元に戻す (Undo)"
+                  >
+                    <Undo2 className="w-4.5 h-4.5" />
+                    <span>元に戻す</span>
+                  </button>
+                  <button
+                    onClick={handleRedo}
+                    disabled={historyIndex >= history.length - 1}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:hover:bg-transparent rounded-xl transition-all font-sans text-sm font-semibold cursor-pointer"
+                    title="やり直す (Redo)"
+                  >
+                    <Redo2 className="w-4.5 h-4.5" />
+                    <span>やり直す</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Export Settings Row */}
+            <div className="border-t border-slate-100 pt-5 flex flex-wrap items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="w-4 h-4 text-slate-400" />
+                  <span className="text-xs font-bold text-slate-500 font-sans">
+                    エクスポート設定:
+                  </span>
+                </div>
+                
+                {/* Filename Input */}
+                <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
+                  <span className="px-2 py-1 text-xs text-slate-400 font-mono bg-slate-100 border-r border-slate-200">
+                    ファイル名
+                  </span>
+                  <input
+                    type="text"
+                    value={exportFileName}
+                    onChange={(e) => setExportFileName(e.target.value)}
+                    className="px-2.5 py-1 text-xs text-slate-700 bg-transparent focus:outline-none w-36 font-sans font-medium"
+                  />
+                </div>
+
+                {/* Delimiter Selector */}
+                <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
+                  <span className="px-2 py-1 text-xs text-slate-400 font-mono bg-slate-100 border-r border-slate-200">
+                    区切り文字
+                  </span>
+                  <select
+                    value={exportDelimiter}
+                    onChange={(e) => setExportDelimiter(e.target.value)}
+                    className="px-2.5 py-1 text-xs text-slate-700 bg-transparent focus:outline-none cursor-pointer font-sans font-medium"
+                  >
+                    <option value=",">カンマ ( , ) - 標準CSV</option>
+                    <option value=";">セミコロン ( ; ) - 欧州</option>
+                    <option value="&#9;">タブ ( \\t ) - TSV形式</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Export Download Button */}
+              <button
+                onClick={handleExportCSV}
+                id="btn-export-csv"
+                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-xl shadow-md shadow-indigo-100 transition-all font-sans text-sm font-bold cursor-pointer"
+              >
+                <Download className="w-4 h-4" />
+                <span>編集したCSVを保存</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Help banner / Quick Guide inside Footer */}
+          <div className="bg-slate-100 border border-slate-200 rounded-xl p-4 flex items-start gap-3">
+            <Info className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
+            <div className="text-xs text-slate-600 space-y-1 font-sans">
+              <p className="font-semibold text-slate-800">💡 便利な操作ガイド</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-1">
+                <p>・<strong>カラム移動:</strong> 上部のハンドル <span className="inline-flex bg-white px-1 border rounded">☰</span> をドラッグ、または矢印で左右に並び替え可能！</p>
+                <p>・<strong>セルの編集:</strong> セルまたはカラム名を<strong>ダブルクリック</strong>して、値を直接編集可能！</p>
+                <p>・<strong>ファイル読込:</strong> パソコンからこの画面にファイルを直接<strong>ドラッグ＆ドロップ</strong>で読み込めます！</p>
+              </div>
+            </div>
+          </div>
+
+        </footer>
 
       </main>
     </div>

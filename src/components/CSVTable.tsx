@@ -340,12 +340,12 @@ export default function CSVTable({
                           <GripVertical className="w-3.5 h-3.5" />
                         </div>
 
-                        {/* Move Buttons */}
-                        <div className="flex items-center gap-0.5 opacity-60 group-hover/header:opacity-100 transition-opacity">
+                        {/* Move & Action Buttons */}
+                        <div className="flex items-center gap-1 opacity-75 group-hover/header:opacity-100 transition-opacity">
                           <button
                             onClick={() => moveColumn(idx, 'left')}
                             disabled={idx === 0}
-                            className="p-0.5 hover:bg-slate-200 hover:text-slate-700 disabled:opacity-20 rounded transition-all"
+                            className="p-0.5 hover:bg-slate-200 hover:text-slate-700 disabled:opacity-20 rounded transition-all cursor-pointer"
                             title="左に移動"
                           >
                             <ArrowLeft className="w-3 h-3" />
@@ -353,7 +353,7 @@ export default function CSVTable({
                           <button
                             onClick={() => moveColumn(idx, 'right')}
                             disabled={idx === headers.length - 1}
-                            className="p-0.5 hover:bg-slate-200 hover:text-slate-700 disabled:opacity-20 rounded transition-all"
+                            className="p-0.5 hover:bg-slate-200 hover:text-slate-700 disabled:opacity-20 rounded transition-all cursor-pointer"
                             title="右に移動"
                           >
                             <ArrowRight className="w-3 h-3" />
@@ -391,19 +391,23 @@ export default function CSVTable({
                               {col.name}
                             </span>
                             
-                            <div className="flex items-center gap-1 opacity-0 group-hover/header:opacity-100 transition-opacity">
+                            <div className="flex items-center gap-1 opacity-40 group-hover/header:opacity-100 transition-opacity">
                               <button
                                 onClick={() => startEditingHeader(col.id, col.name)}
-                                className="p-1 text-slate-400 hover:text-indigo-600 rounded hover:bg-slate-200"
+                                className="p-1 text-slate-400 hover:text-indigo-600 rounded hover:bg-slate-200 cursor-pointer"
                                 title="カラム名を編集"
                               >
                                 <Edit2 className="w-3 h-3" />
                               </button>
                               {headers.length > 1 && (
                                 <button
-                                  onClick={() => onDeleteColumn(col.id)}
-                                  className="p-1 text-slate-400 hover:text-red-600 rounded hover:bg-slate-200"
-                                  title="カラムを削除"
+                                  onClick={() => {
+                                    if (confirm(`このカラム「${col.name}」を完全に削除しますか？\n（各行のこの列のデータも一括で消去されます。変更履歴から「元に戻す」ことが可能です。）`)) {
+                                      onDeleteColumn(col.id);
+                                    }
+                                  }}
+                                  className="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-slate-200 cursor-pointer"
+                                  title="このカラム（列）を削除"
                                 >
                                   <Trash2 className="w-3 h-3" />
                                 </button>
