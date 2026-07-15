@@ -42,9 +42,27 @@ export default function App() {
   const [isDraggingFile, setIsDraggingFile] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState<{ text: string; type: 'success' | 'info' | 'error' } | null>(null);
 
-  // Initialize with Sample Data
+  // Initialize with empty sheet layout
   useEffect(() => {
-    loadPreset(getSampleCSVText(), 'サンプル商品データ');
+    const initColId1 = `col-${Math.random().toString(36).substring(2, 9)}`;
+    const initColId2 = `col-${Math.random().toString(36).substring(2, 9)}`;
+    const initColId3 = `col-${Math.random().toString(36).substring(2, 9)}`;
+    
+    const initialBlankData: CSVData = {
+      headers: [
+        { id: initColId1, name: 'カラム1' },
+        { id: initColId2, name: 'カラム2' },
+        { id: initColId3, name: 'カラム3' }
+      ],
+      rows: [
+        { id: `row-${Math.random().toString(36).substring(2, 9)}-0`, cells: { [initColId1]: '', [initColId2]: '', [initColId3]: '' } },
+        { id: `row-${Math.random().toString(36).substring(2, 9)}-1`, cells: { [initColId1]: '', [initColId2]: '', [initColId3]: '' } },
+        { id: `row-${Math.random().toString(36).substring(2, 9)}-2`, cells: { [initColId1]: '', [initColId2]: '', [initColId3]: '' } }
+      ]
+    };
+    setHistory([initialBlankData]);
+    setHistoryIndex(0);
+    setData(initialBlankData);
   }, []);
 
   // Set alert feedback helper
